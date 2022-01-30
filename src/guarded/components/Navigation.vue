@@ -6,10 +6,10 @@
     <div class="position-sticky pt-3">
       <ul class="nav flex-column">
          <li class="nav-item">
-          <router-link to="/" class="nav-link"><span data-feather="file"></span> Home</router-link>
+          <router-link to="/dashboard" class="nav-link" active-class="active"><span data-feather="file"></span> Home</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/users" class="nav-link"><span data-feather="file"></span> Users/Profile</router-link>
+          <router-link to="/users" class="nav-link" active-class="active"><span data-feather="file"></span> Users/Profile</router-link>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">
@@ -66,7 +66,8 @@
   </nav>
 </template>
 
-<script>
+
+<script lang="ts">
 export default {
   name: "Navigation",
 };

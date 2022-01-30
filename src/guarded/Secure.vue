@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { onMounted, ref } from "vue";
 import Menu from "@/guarded/components/Menu.vue";
 import Navigation from "@/guarded/components/Navigation.vue";

@@ -19,7 +19,7 @@
 </main>
 </template>
 
-<script>
+<script lang="ts">
 import { ref } from "vue";
 import axios from "axios";
 import {  useRouter } from "vue-router";

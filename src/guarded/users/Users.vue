@@ -13,42 +13,103 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(user,index) in userList" :key=index>
-                <td>{{user._id}}</td>
-                <td>{{user.username}}</td>
-                <td>{{user.role}}</td>
-                <td>{{user.deposit}}</td>
-                <td>DELET/UPDATE</td>
+            <tr v-for="user in userList" :key="user.id">
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.deposit }}</td>
+                <td>
+                    <div class="btn-group mr-2">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" @click="update(user.id)">Edit</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" @click="del(user.id)">Dele</a>
+
+                    </div>
+
+                </td>
             </tr>
         </tbody>
     </table>
 </div>
+<!-- Demo purpose, not too much users...
+<nav>
+    <ul class="pagination">
+        <li class="page-item">
+            <a href="javascript:void(0)" class="page-link" @click="previous">Previous</a>
+        </li>
+
+        <li class="page-item">
+            <a href="javascript:void(0)" class="page-link" @click="next" :disabled="disabled">Next</a>
+        </li>
+    </ul>
+</nav>-->
 </template>
 
-<script>
-import {
-    ref,
-    onMounted
-} from "vue";
+<script lang="ts">
+import {  ref,  onMounted } from "vue";
 import axios from "axios";
 export default {
     name: "Users",
 
-    setup() { //no control yet. will check all later
+    setup() {
+        //no control yet. will check all later
         const userList = ref([]);
+        const page = ref(1);
+        const disabled = ref(false);
 
-        onMounted(async () => {
-            await axios.get("/api/user")
-            .then( (response) => {  
-                console.log(response.data.data) 
-                userList.value = response.data.data;
-            })
-            .catch( (e)=>console.log(e) );
+        const load = async () => {
+            await axios
+                //.get(`/api/user?page=${page.value}`) -> I will care about later..
+                .get(`/api/user`)
+                .then((response) => {
+                    console.log(response.data.data);
+                    userList.value = response.data.data;
+                })
+                .catch((e) => console.log(e));
+        };
 
-        });
+        onMounted(load);
+
+        const previous = async () => {
+            page.value--;
+            await load();
+        };
+
+        const next = async () => {
+            page.value++;
+            load();
+        };
+
+        const del = async (id: number) => {
+            if(confirm('Please confirm')) {
+                await axios.delete(`api/user/delete/${id}`)
+                .then((response) => { 
+                    console.log(response.data);
+                    //no control yet - in case user deleted without a problem
+                    //userList.value = userList.value.filter( u => u._id != id )
+                    })
+                .catch((e) => console.log(e));
+            }
+        };
+
+        const update = async (id: number) => {
+            if(confirm('Please confirm')) {
+                await axios.delete(`api/user/update/${id}`)
+                .then((response) => { 
+                    console.log(response.data);
+                    //no control yet - in case user deleted without a problem
+                    //userList.value = userList.value.filter( u => u._id != id )
+                    })
+                .catch((e) => console.log(e));
+            }
+        };
         return {
-            userList
-        }
+            userList,
+            previous,
+            next,
+            disabled,
+            del,
+            update
+        };
     },
 };
 </script>
