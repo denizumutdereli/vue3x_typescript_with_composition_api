@@ -2,19 +2,7 @@
   <main class="form-signin">
     <form @submit.prevent="handleFormSubmit">
       <h1 class="h3 mb-3 fw-normal">Please register</h1>
-
-      <div class="form-floating">
-        <input
-          type="text"
-          class="form-control"
-          id="firstName"
-          placeholder="Please enter your name"
-          required
-          v-model="firstName"
-        />
-        <label for="floatingInput">First Name</label>
-      </div>
-
+ 
       <div class="form-floating">
         <input
           type="email"
@@ -58,6 +46,12 @@
         Register
       </button>
     </form>
+
+        <div class="mb-3">
+            <br />
+            <router-link to="/login" class="mb-3 fw-normal">Existing user?</router-link></div>
+
+   
   </main>
 </template>
 
@@ -88,7 +82,6 @@ export default {
     }
   },
   setup() {
-    const firstName = ref("");
     const email = ref("");
     const password = ref("");
     const confirmPassword = ref("");
@@ -97,7 +90,6 @@ export default {
     const handleFormSubmit = async () => {
     
     const promise = axios.post("user", {
-        firstName: firstName.value,
         username: email.value,
         role : 'seller',
         password: password.value,
@@ -117,7 +109,6 @@ export default {
    };
     
     return {
-      firstName,
       email,
       password,
       confirmPassword,

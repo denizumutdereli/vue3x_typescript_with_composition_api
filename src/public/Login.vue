@@ -15,14 +15,25 @@
         <button class="w-100 btn btn-lg btn-primary" type="submit">
             Sign in
         </button>
+
+        <div class="mb-3">
+            <br />
+            <router-link to="/register" class="mb-3 fw-normal">New user?</router-link>
+
+        </div>
+
     </form>
 </main>
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import {
+    ref
+} from "vue";
 import axios from "axios";
-import {  useRouter } from "vue-router";
+import {
+    useRouter
+} from "vue-router";
 
 export default {
     name: "Login",

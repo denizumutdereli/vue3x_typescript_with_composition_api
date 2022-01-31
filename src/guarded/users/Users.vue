@@ -21,7 +21,7 @@
                 <td>
                     <div class="btn-group mr-2">
                         <a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" @click="update(user.id)">Edit</a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" @click="del(user.id)">Dele</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" @click="del(user.id)">Delete</a>
 
                     </div>
 
@@ -45,8 +45,10 @@
 </template>
 
 <script lang="ts">
-import {  ref,  onMounted } from "vue";
+import {  ref,  onMounted} from "vue";
 import axios from "axios";
+import { Entity } from '@/interfaces/Entity';
+
 export default {
     name: "Users",
 
@@ -56,7 +58,15 @@ export default {
         const page = ref(1);
         const disabled = ref(false);
 
+        const updating = async () => {
+            console.log('here')
+
+            setInterval(load, 5000);
+
+        }
+
         const load = async () => {
+
             await axios
                 //.get(`/api/user?page=${page.value}`) -> I will care about later..
                 .get(`/api/user`)
@@ -65,6 +75,8 @@ export default {
                     userList.value = response.data.data;
                 })
                 .catch((e) => console.log(e));
+           
+            //setInterval(load, 5000);
         };
 
         onMounted(load);
@@ -79,28 +91,31 @@ export default {
             load();
         };
 
-        const del = async (id: number) => {
-            if(confirm('Please confirm')) {
+        const del = async (id: string | number) => { //mongoose quick fix for ids
+
+            console.log(id)
+            if (confirm('Please confirm')) {
+                console.log(userList.value);
                 await axios.delete(`api/user/delete/${id}`)
-                .then((response) => { 
-                    console.log(response.data);
-                    //no control yet - in case user deleted without a problem
-                    //userList.value = userList.value.filter( u => u._id != id )
+                    .then((response) => {
+                        console.log(response.data);
+                        //no control yet - in case user deleted without a problem
+                        userList.value = userList.value.filter( (u : Entity )=> u.id != id ) //->interface overlay
                     })
-                .catch((e) => console.log(e));
+                    .catch((e) => console.log(e));
             }
         };
 
         const update = async (id: number) => {
-            if(confirm('Please confirm')) {
-                await axios.delete(`api/user/update/${id}`)
-                .then((response) => { 
-                    console.log(response.data);
-                    //no control yet - in case user deleted without a problem
-                    //userList.value = userList.value.filter( u => u._id != id )
-                    })
-                .catch((e) => console.log(e));
-            }
+            // if(confirm('Please confirm')) {
+            //     await axios.delete(`api/user/update/${id}`)
+            //     .then((response) => { 
+            //         console.log(response.data);
+            //         //no control yet - in case user deleted without a problem
+            //         //userList.value = userList.value.filter( u => u._id != id )
+            //         })
+            //     .catch((e) => console.log(e));
+            // }
         };
         return {
             userList,
