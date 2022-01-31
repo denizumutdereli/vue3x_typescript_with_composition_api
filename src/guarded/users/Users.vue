@@ -45,9 +45,15 @@
 </template>
 
 <script lang="ts">
-import {  ref,  onMounted} from "vue";
+import {
+    ref,
+    onMounted
+} from "vue";
 import axios from "axios";
-import { Entity } from '@/interfaces/Entity';
+import {
+    Entity
+} from '@/interfaces/Entity';
+import router from "../../router";
 
 export default {
     name: "Users",
@@ -71,11 +77,11 @@ export default {
                 //.get(`/api/user?page=${page.value}`) -> I will care about later..
                 .get(`/api/user`)
                 .then((response) => {
-                    console.log(response.data.data);
+                    //console.log(response.data.data);
                     userList.value = response.data.data;
                 })
                 .catch((e) => console.log(e));
-           
+
             //setInterval(load, 5000);
         };
 
@@ -100,22 +106,14 @@ export default {
                     .then((response) => {
                         console.log(response.data);
                         //no control yet - in case user deleted without a problem
-                        userList.value = userList.value.filter( (u : Entity )=> u.id != id ) //->interface overlay
+                        userList.value = userList.value.filter((u: Entity) => u.id != id) //->interface overlay
                     })
                     .catch((e) => console.log(e));
             }
         };
 
-        const update = async (id: number) => {
-            // if(confirm('Please confirm')) {
-            //     await axios.delete(`api/user/update/${id}`)
-            //     .then((response) => { 
-            //         console.log(response.data);
-            //         //no control yet - in case user deleted without a problem
-            //         //userList.value = userList.value.filter( u => u._id != id )
-            //         })
-            //     .catch((e) => console.log(e));
-            // }
+        const update = async (id: string | number) => {
+            await router.push(`/users/${id}/edit`)
         };
         return {
             userList,

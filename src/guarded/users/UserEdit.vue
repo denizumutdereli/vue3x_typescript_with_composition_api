@@ -1,7 +1,7 @@
 <template>
 <main class="form-signin">
     <form @submit.prevent="handleFormSubmit">
-        <h1 class="h3 mb-3 fw-normal">Add new user</h1>
+        <h1 class="h3 mb-3 fw-normal">Edit user</h1>
 
         <span class="text-danger" v-show="error">{{message}}</span>
         <hr />
@@ -19,41 +19,51 @@
             <input type="password" class="form-control" id="confirmPassword" placeholder="Please confirm your password" required v-model="confirmPassword" />
             <label for="floatingInput">Password</label>
         </div>
-       
+
         <div class="form-floating">
 
-          <select class="form-control"  id="roleId" v-model="roleId">
-            <option value="0">Select Role</option>
-            <option v-for="(role,index) in roles" :key="index" :value="role">{{role}}</option><!--fixed for mongoose-->
-          </select>
+            <select class="form-control" id="roleId" v-model="roleId">
+                <option value="0">Select Role</option>
+                <option v-for="(role,index) in roles" :key="index" :value="role">{{role}}</option>
+                <!--fixed for mongoose-->
+            </select>
             <label for="floatingInput">User Role</label>
         </div>
 
-        <br/>
+        <br />
 
         <button class="w-100 btn btn-lg btn-primary" type="submit" :disabled="error">
             Register
         </button>
     </form>
- 
+
 </main>
 </template>
 
-<script>
-import {  ref, onMounted } from 'vue';
+<script lang="ts">
+import {
+    ref,
+    onMounted
+} from 'vue';
 import axios from 'axios';
 import {
-    useRouter
+    useRouter,
+    useRoute
 } from 'vue-router'
+import { User } from '@/classes/User';
 
 export default {
-    name: 'UserCreate',
+    name: 'UserEdit',
     setup() {
         const error = ref(false);
         const message = ref('');
         const router = useRouter();
+        const {
+            params
+        } = useRoute();
         const email = ref('');
         const roles = ref([]);
+        const deposit = ref(0);
         const roleId = ref(0);
         const password = ref('');
         const confirmPassword = ref('');
@@ -70,26 +80,38 @@ export default {
             );
         }
 
-        onMounted( async () => {
-              await axios.get('api/user/roles')
-              .then(response => {
-                    const promise = response.data;
+        onMounted(async () => {
+            await axios.get('api/user/roles')
+                .then(response => {
+                    let promise = response.data;
                     /* tslint:disable-next-line */
                     if (promise.status === false) {
-
                         showMessage(promise.error);
 
                     } else {
                         roles.value = promise.data;
                     }
 
+                }).then(async () => {
+                    await axios.get(`api/user/detail/${params.id}`)
+                        .then(response => {
+                            let promise = response.data;
+                            if(promise.status === false) {showMessage(promise.error)} else{
+                                const user: User = promise.data;
+                                email.value = user.username;
+                                deposit.value = user.deposit;
+                                //I will back here for password changes...
+
+                                console.log(email.value)
+                                }
+                        }).catch((e) => console.log(e))
                 })
                 .catch((e) => console.log(e))
-          return
+             
 
         });
         const handleFormSubmit = async () => { //no control yet. just fundamental funcs. will update!
-        await axios.post('/user', {
+            await axios.post('/user', {
                     username: email.value,
                     password: password.value,
                     role: roleId.value
@@ -116,6 +138,7 @@ export default {
             email,
             roleId,
             roles,
+            deposit,
             password,
             confirmPassword,
             handleFormSubmit,

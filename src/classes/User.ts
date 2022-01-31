@@ -4,15 +4,17 @@ import { Entity } from "@/interfaces/Entity";
  export class User implements Entity{
 
     id: string; //mongoose string not number!
-    email: string;
+    username: string;
     role: Roles;
+    deposit: number;
     permissions:string[];
 
-    constructor(id='0', email: string, role =  {}, permissions: string[] = []){
+    constructor(id='0', username: string, role =  {}, deposit = 0, permissions: string[] = []){
         id;
-        email;
+        username;
         role;
-        permissions
+        deposit;
+        permissions;
     }
 
 }
