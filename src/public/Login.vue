@@ -3,6 +3,9 @@
     <form>
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
+        <span class="text-danger" v-show="error">{{message}}</span>
+        <hr />
+
         <div class="form-floating">
             <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required v-model="email" />
             <label for="floatingInput">Email address</label>
@@ -12,7 +15,7 @@
             <label for="floatingPassword">Password</label>
         </div>
 
-        <button class="w-100 btn btn-lg btn-primary" type="submit">
+        <button class="w-100 btn btn-lg btn-primary" type="submit" :disabled="error">
             Sign in
         </button>
 
@@ -39,30 +42,51 @@ export default {
     name: "Login",
 
     setup: () => {
+        const error = ref(false);
+        const message = ref('');
         const email = ref("");
         const password = ref("");
         const router = useRouter();
+
+        const showMessage = (e:string) => {
+            error.value = true;
+            message.value = e;
+            setTimeout(
+
+                () => {
+                    error.value = false
+                }, 4000
+
+            );
+        };
+
         const handleFormSubmit = async () => {
-
             const response = await axios.post('auth', {
-                username: email.value,
-                password: password.value
-            });
+                    username: email.value,
+                    password: password.value
+                }).then(response => {
+                    const promise = response.data;
+                    /* tslint:disable-next-line */
+                    if (promise.status === false) {
 
-            if (response.data.status == false) {
-                console.log(response.data.error)
-            } else {
-                //set token to the localstorage
-                localStorage.setItem('token', response.data.token);
-                axios.defaults.headers.common = {
-                    'Authorization': `Bearer ${response.data.token}`
-                }
-                router.push('/');
-            }
+                        showMessage(promise.error);
+
+                    } else {
+                        localStorage.setItem('token', response.data.token);
+                        axios.defaults.headers.common = {
+                            'Authorization': `Bearer ${response.data.token}`
+                        }
+                        router.push('/');
+                    }
+
+                })
+                .catch((e) => console.log(e))
 
         }
 
         return {
+            error,
+            message,
             email,
             password,
             handleFormSubmit,

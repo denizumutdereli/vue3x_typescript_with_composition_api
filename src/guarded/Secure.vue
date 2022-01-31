@@ -17,7 +17,6 @@ import Menu from "@/guarded/components/Menu.vue";
 import Navigation from "@/guarded/components/Navigation.vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
-import Users from "@/guarded/users/Users.vue";
 
 export default {
   name: "Secure",
@@ -35,10 +34,8 @@ export default {
     onMounted(async () => {
       try {
         const response = await axios.get("api/user");
-
         //error check later!!
         user.value = response.data.data[0];
-        //console.log(response.data);
       } catch (e) {
         await router.push("/login");
       }

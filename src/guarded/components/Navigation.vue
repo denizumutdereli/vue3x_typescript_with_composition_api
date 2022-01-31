@@ -12,6 +12,9 @@
           <router-link to="/users" class="nav-link" active-class="active"><span data-feather="file"></span> Users/Profile</router-link>
         </li>
         <li class="nav-item">
+          <router-link to="/users/create" class="nav-link" active-class="active"><span data-feather="file"></span> Create Users</router-link>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="#">
             <span data-feather="shopping-cart"></span>
             Products

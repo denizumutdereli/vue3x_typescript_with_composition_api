@@ -1,11 +1,10 @@
 <template>
 <main class="form-signin">
     <form @submit.prevent="handleFormSubmit">
-        <h1 class="h3 mb-3 fw-normal">Please register</h1>
+        <h1 class="h3 mb-3 fw-normal">Add new user</h1>
 
         <span class="text-danger" v-show="error">{{message}}</span>
         <hr />
-
         <div class="form-floating">
             <input type="email" class="form-control" id="email" placeholder="name@example.com" required v-model="email" />
             <label for="floatingInput">Email address</label>
@@ -25,36 +24,30 @@
             Register
         </button>
     </form>
-
-    <div class="mb-3">
-        <br />
-        <router-link to="/login" class="mb-3 fw-normal">Existing user?</router-link>
-    </div>
-
+ 
 </main>
 </template>
 
-<script lang="ts">
+<script>
 import {
     ref
-} from "vue";
-import axios from "axios";
+} from 'vue';
+import axios from 'axios';
 import {
     useRouter
-} from "vue-router";
+} from 'vue-router'
 
 export default {
-    name: "Register",
-
+    name: 'UserCreate',
     setup() {
-        const message = ref('');
         const error = ref(false);
-        const email = ref("");
-        const password = ref("");
-        const confirmPassword = ref("");
+        const message = ref('');
         const router = useRouter();
+        const email = ref('');
+        const password = ref('');
+        const confirmPassword = ref('');
 
-        const showMessage = (e: string) => {
+        const showMessage = (e) => {
             error.value = true;
             message.value = e;
             setTimeout(
@@ -64,16 +57,14 @@ export default {
                 }, 4000
 
             );
-        };
-
-        const handleFormSubmit = async () => {
-
-            await axios.post("user", {
+        }
+        const handleFormSubmit = async () => { //no control yet. just fundamental funcs. will update!
+        await axios.post('/user', {
                     username: email.value,
-                    role: 'seller',
                     password: password.value,
-                    confirmPassword: confirmPassword.value,
-                }).then(response => {
+                    role: 'seller'
+                })
+                .then(response => {
                     const promise = response.data;
                     /* tslint:disable-next-line */
                     if (promise.status === false) {
@@ -81,39 +72,28 @@ export default {
                         showMessage(promise.error);
 
                     } else {
-                        router.push('/')
+                        router.push('/users')
                     }
 
                 })
                 .catch((e) => console.log(e))
-        };
+        }
 
         return {
             error,
             message,
+            showMessage,
             email,
             password,
             confirmPassword,
             handleFormSubmit,
-        };
-    },
-};
+        }
+
+    }
+}
 </script>
 
 <style scoped>
-html,
-body {
-    height: 100%;
-}
-
-body {
-    display: flex;
-    align-items: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    background-color: #f5f5f5;
-}
-
 .form-signin {
     width: 100%;
     max-width: 330px;
