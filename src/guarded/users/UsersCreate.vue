@@ -39,12 +39,12 @@
 </main>
 </template>
 
-<script>
+<script lang="ts">
+/*eslint-disable */
 import {  ref, onMounted } from 'vue';
 import axios from 'axios';
-import {
-    useRouter
-} from 'vue-router'
+import {  useRouter } from 'vue-router'
+import { UserCreateDTO } from '@/dto/UserCreateDTO';
 
 export default {
     name: 'UserCreate',
@@ -54,23 +54,17 @@ export default {
         const router = useRouter();
         const email = ref('');
         const roles = ref([]);
-        const roleId = ref(0);
+        const roleId = ref('');
         const password = ref('');
         const confirmPassword = ref('');
 
-        const showMessage = (e) => {
+        const showMessage = (e: string) => {
             error.value = true;
             message.value = e;
-            setTimeout(
-
-                () => {
-                    error.value = false
-                }, 4000
-
-            );
+            setTimeout(   () => {   error.value = false  }, 4000 );
         }
 
-        onMounted( async () => {
+        onMounted( async ():Promise<void> => { //will fix here
               await axios.get('api/user/roles')
               .then(response => {
                     const promise = response.data;
@@ -88,12 +82,10 @@ export default {
           return
 
         });
-        const handleFormSubmit = async () => { //no control yet. just fundamental funcs. will update!
-        await axios.post('/user', {
-                    username: email.value,
-                    password: password.value,
-                    role: roleId.value
-                })
+
+        const handleFormSubmit = async ():Promise<void> => { //no control yet. just fundamental funcs. will update!
+        const user : UserCreateDTO = {username: email.value, password:password.value, role:roleId.value}
+        await axios.post('/user', user)
                 .then(response => {
                     const promise = response.data;
                     /* tslint:disable-next-line */

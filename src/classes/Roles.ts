@@ -2,7 +2,7 @@ import { Permissions } from "@/classes/Permission";
 import { Entity } from "@/interfaces/Entity";
 
 export class Roles implements Entity{
-    id?: number;
+    id: number;
     name?: string;
     permissions?: Permissions[]
 

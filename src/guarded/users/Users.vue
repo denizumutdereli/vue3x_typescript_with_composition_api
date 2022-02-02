@@ -45,14 +45,10 @@
 </template>
 
 <script lang="ts">
-import {
-    ref,
-    onMounted
-} from "vue";
+import {  ref,  onMounted } from "vue";
 import axios from "axios";
-import {
-    Entity
-} from '@/interfaces/Entity';
+import { Entity } from '@/interfaces/Entity';
+//import {UserUpdateDTO} from "@/dto/UserUpdateDTO";
 import router from "../../router";
 
 export default {
@@ -64,25 +60,21 @@ export default {
         const page = ref(1);
         const disabled = ref(false);
 
-        const updating = async () => {
-            console.log('here')
-
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const updating = async () => {//backround updating
             setInterval(load, 5000);
-
         }
 
-        const load = async () => {
-
+        const load = async ():Promise<void> => {
             await axios
                 //.get(`/api/user?page=${page.value}`) -> I will care about later..
                 .get(`/api/user`)
                 .then((response) => {
                     //console.log(response.data.data);
                     userList.value = response.data.data;
+                     
                 })
                 .catch((e) => console.log(e));
-
-            //setInterval(load, 5000);
         };
 
         onMounted(load);
@@ -98,10 +90,8 @@ export default {
         };
 
         const del = async (id: string | number) => { //mongoose quick fix for ids
-
-            console.log(id)
             if (confirm('Please confirm')) {
-                console.log(userList.value);
+                //console.log(userList.value);
                 await axios.delete(`api/user/delete/${id}`)
                     .then((response) => {
                         console.log(response.data);

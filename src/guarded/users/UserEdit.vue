@@ -1,3 +1,4 @@
+/*eslint-disable */
 <template>
 <main class="form-signin">
     <form @submit.prevent="handleFormSubmit">
@@ -41,19 +42,14 @@
 </template>
 
 <script lang="ts">
-import {
-    ref,
-    onMounted
-} from 'vue';
+import { ref,  onMounted } from 'vue';
 import axios from 'axios';
-import {
-    useRouter,
-    useRoute
-} from 'vue-router'
-import { User } from '@/classes/User';
+import {  useRouter,  useRoute } from 'vue-router'
+import { UserUpdateDTO } from '@/dto/UserUpdateDTO';
 
 export default {
     name: 'UserEdit',
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     setup() {
         const error = ref(false);
         const message = ref('');
@@ -64,23 +60,17 @@ export default {
         const email = ref('');
         const roles = ref([]);
         const deposit = ref(0);
-        const roleId = ref(0);
+        const roleId = ref('');
         const password = ref('');
         const confirmPassword = ref('');
 
-        const showMessage = (e) => {
+        const showMessage = (e: string) => {
             error.value = true;
             message.value = e;
-            setTimeout(
-
-                () => {
-                    error.value = false
-                }, 4000
-
-            );
+            setTimeout(   () => {   error.value = false  }, 4000 );
         }
 
-        onMounted(async () => {
+        onMounted(async ():Promise<void>  => {
             await axios.get('api/user/roles')
                 .then(response => {
                     let promise = response.data;
@@ -92,16 +82,16 @@ export default {
                         roles.value = promise.data;
                     }
 
-                }).then(async () => {
+                }).then(async ():Promise<void> => {
                     await axios.get(`api/user/detail/${params.id}`)
                         .then(response => {
                             let promise = response.data;
                             if(promise.status === false) {showMessage(promise.error)} else{
-                                const user: User = promise.data;
+                                const user: UserUpdateDTO = promise.data[0];
                                 email.value = user.username;
-                                deposit.value = user.deposit;
+                                deposit.value = user.deposit ?? 0;
                                 //I will back here for password changes...
-
+                               
                                 console.log(email.value)
                                 }
                         }).catch((e) => console.log(e))
@@ -110,7 +100,7 @@ export default {
              
 
         });
-        const handleFormSubmit = async () => { //no control yet. just fundamental funcs. will update!
+        const handleFormSubmit = async ():Promise<void>  => { //no control yet. just fundamental funcs. will update!
             await axios.post('/user', {
                     username: email.value,
                     password: password.value,
@@ -120,13 +110,10 @@ export default {
                     const promise = response.data;
                     /* tslint:disable-next-line */
                     if (promise.status === false) {
-
-                        showMessage(promise.error);
-
-                    } else {
+                         showMessage(promise.error);
+                      } else {
                         router.push('/users')
-                    }
-
+                        }
                 })
                 .catch((e) => console.log(e))
         }

@@ -1,20 +1,12 @@
-import {Roles} from "@/classes/Roles"
-import { Entity } from "@/interfaces/Entity";
+import {UserUpdateDTO } from "@/dto/UserUpdateDTO";
 
- export class User implements Entity{
-
-    id: string; //mongoose string not number!
-    username: string;
-    role: Roles;
-    deposit: number;
-    permissions:string[];
-
-    constructor(id='0', username: string, role =  {}, deposit = 0, permissions: string[] = []){
+ export class User  {
+    constructor(UserDTO : UserUpdateDTO) {
+        const {id, username, role, deposit, permissions} = UserDTO;
         id;
         username;
         role;
         deposit;
         permissions;
     }
-
 }
